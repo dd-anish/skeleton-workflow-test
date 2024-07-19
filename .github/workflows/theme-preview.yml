@@ -3,7 +3,7 @@ name: Shopify Theme Management
 on:
   pull_request:
     types: [opened, synchronize, closed]
-
+  workflow_dispatch:
 jobs:
   manage-theme:
     runs-on: ubuntu-latest
