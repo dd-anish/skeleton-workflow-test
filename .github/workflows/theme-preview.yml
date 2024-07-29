@@ -113,6 +113,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SHOPIFY_THEME_DIRECTORY: '.'
           SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false
+          THEME_ID: ${{ steps.deploy-theme.outputs.THEME_ID }}
 
       # Add a step that always runs for testing
       - name: Echo test
