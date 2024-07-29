@@ -26,6 +26,7 @@ jobs:
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         uses: matthew-petrie/shopify-theme-actions@1.2.2
+        id: deploy-theme  # Add this line to reference this step later
         with:
           ACTION: 'DEPLOYMENT_PREVIEW'
           SHOPIFY_STORE_URL: ${{ secrets.SHOP_STORE }}
@@ -34,6 +35,23 @@ jobs:
           SHOPIFY_THEME_DIRECTORY: '.' # Or your theme directory
           SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false # Set to true if deploying to a live theme
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Add this new step to create a comment with a clickable link
+      - name: Comment PR with clickable link
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const themeId = '${{ steps.deploy-theme.outputs.THEME_ID }}';
+            const storeUrl = '${{ secrets.SHOP_STORE }}';
+            const previewUrl = `https://${storeUrl}/?preview_theme_id=${themeId}`;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: `🎉 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'. The theme can be previewed at: [${previewUrl}](${previewUrl})`
+            })
 
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
@@ -44,6 +62,7 @@ jobs:
           SHOPIFY_STORE_URL: ${{ secrets.SHOP_STORE }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
+          SHOPIFY_THEME_DIRECTORY: '.' # Or your theme directory
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Add a step that always runs for testing
