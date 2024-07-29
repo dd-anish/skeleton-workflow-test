@@ -36,8 +36,8 @@ jobs:
           SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false # Set to true if deploying to a live theme
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Add this new step to create a comment with a clickable link
-      - name: Comment PR with clickable link
+      # Edit
+      - name: Edit PR comment with clickable link
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         uses: actions/github-script@v6
         with:
@@ -47,15 +47,30 @@ jobs:
             const storeUrl = '${{ secrets.SHOP_STORE }}';
             const previewUrl = `https://${storeUrl}/?preview_theme_id=${themeId}`;
             
-            console.log('Repository:', context.repo.owner + '/' + context.repo.repo);
-            console.log('Pull Request Number:', context.issue.number);
-            
-            await github.rest.issues.createComment({
+            // Find the most recent comment by the github-actions bot
+            const comments = await github.rest.issues.listComments({ 
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
-              body: `🎉 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'. The theme can be previewed at: [${previewUrl}](${previewUrl})`
             });
+            
+            const botComment = comments.data.reverse().find(comment => comment.user.login === 'github-actions[bot]');
+      
+            if (botComment) {
+              // Edit the existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: `🎉 New Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'.
+                
+                The theme can be previewed at: [Click here to preview](${previewUrl})
+                
+                ${botComment.body}`  // Append the original comment body
+              });
+            } else {
+              console.log('No existing bot comment found to edit');
+            }
 
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
