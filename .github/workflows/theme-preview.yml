@@ -35,7 +35,7 @@ jobs:
           SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Log deployment details
+      - name: Log deployment detail
         run: |
           echo "Deployment attempt completed"
           echo "Files processed: ${{ steps.deploy-theme.outputs.FILES_PROCESSED }}"
