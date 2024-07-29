@@ -31,8 +31,8 @@ jobs:
           SHOPIFY_STORE_URL: ${{ secrets.SHOP_STORE }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
-          SHOPIFY_THEME_DIRECTORY: '.' # Or your theme directory
-          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false # Set to true if deploying to a live theme
+          SHOPIFY_THEME_DIRECTORY: '.'
+          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Remove the previously created PR specific Shopify theme when PR is closed
@@ -45,6 +45,22 @@ jobs:
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHOPIFY_THEME_DIRECTORY: '.'
+          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false
+
+       # Add a comment when the deployment preview is removed
+      - name: Comment on PR closure
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🗑️ The Shopify theme deployment preview has been removedd.'
+            })
 
       # Add a step that always runs for testing
       - name: Echo test
