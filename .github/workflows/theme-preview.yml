@@ -47,7 +47,6 @@ jobs:
             const storeUrl = '${{ secrets.SHOP_STORE }}';
             const previewUrl = `https://${storeUrl}/?preview_theme_id=${themeId}`;
             
-            // Find the most recent comment by the github-actions bot
             const comments = await github.rest.issues.listComments({ 
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -57,7 +56,7 @@ jobs:
             const botComment = comments.data.reverse().find(comment => comment.user.login === 'github-actions[bot]');
       
             if (botComment) {
-              // Edit the existing comment
+  
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -66,7 +65,7 @@ jobs:
                 
                 The theme can be previewed at: [Click here to preview](${previewUrl})
                 
-                ${botComment.body}`  // Append the original comment body
+                ${botComment.body}`
               });
             } else {
               console.log('No existing bot comment found to edit');
