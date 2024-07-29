@@ -74,7 +74,8 @@ jobs:
             Store URL: ${storeUrl}
             Preview: [Click here to preview](${previewUrl})
             
-            Original Deployment Information(from the Mathew Petrie's action):
+            Original Information(from Mathew Petrie's action):
+            
             ${originalBody}`
                           });
                         } else {
