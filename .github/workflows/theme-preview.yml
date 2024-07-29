@@ -77,6 +77,13 @@ jobs:
             } else {
               console.log('No existing bot comment found');
             }
+            
+      - name: Debug GitHub context
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Event action: ${{ github.event.action }}"
+          echo "PR number: ${{ github.event.pull_request.number }}"
 
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
