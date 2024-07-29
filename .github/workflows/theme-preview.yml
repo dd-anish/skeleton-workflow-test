@@ -68,13 +68,13 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: `🎉 New Shopify theme has been deployed!
+                body: `🎉 Shopify theme has been deployed!
 
             Theme ID: ${themeId}
             Store URL: ${storeUrl}
             Preview: [Click here to preview](${previewUrl})
             
-            Original deployment information:
+            Original Deployment Information(from the Mathew Petrie's action):
             ${originalBody}`
                           });
                         } else {
