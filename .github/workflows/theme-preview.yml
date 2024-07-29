@@ -85,6 +85,22 @@ jobs:
           echo "Event action: ${{ github.event.action }}"
           echo "PR number: ${{ github.event.pull_request.number }}"
 
+      - name: List PR Comments
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            console.log('Comments on this PR:');
+            comments.data.forEach(comment => {
+              console.log(`ID: ${comment.id}, User: ${comment.user.login}, Body: ${comment.body.substring(0, 100)}...`);
+            });
+      
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
