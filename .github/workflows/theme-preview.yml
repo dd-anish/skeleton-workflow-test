@@ -46,12 +46,16 @@ jobs:
             const themeId = '${{ steps.deploy-theme.outputs.THEME_ID }}';
             const storeUrl = '${{ secrets.SHOP_STORE }}';
             const previewUrl = `https://${storeUrl}/?preview_theme_id=${themeId}`;
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            
+            console.log('Repository:', context.repo.owner + '/' + context.repo.repo);
+            console.log('Pull Request Number:', context.issue.number);
+            
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
-              repo: context.repo.name,
-              body: `🎉 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'. The theme can be previewed at new: [${previewUrl}](${previewUrl})`
-            })
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `🎉 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'. The theme can be previewed at: [${previewUrl}](${previewUrl})`
+            });
 
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
