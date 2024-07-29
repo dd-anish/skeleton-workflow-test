@@ -77,7 +77,7 @@ jobs:
             } else {
               console.log('No existing bot comment found');
             }
-            
+
       - name: Debug GitHub context
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         run: |
@@ -94,7 +94,6 @@ jobs:
           SHOPIFY_STORE_URL: ${{ secrets.SHOP_STORE }}
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
-          SHOPIFY_THEME_DIRECTORY: '.' # Or your theme directory
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Add a step that always runs for testing
