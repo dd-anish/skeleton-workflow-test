@@ -60,9 +60,7 @@ jobs:
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: `🎉 New 2 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'.
-                
+                comment_id: botComment.id,      
                 body: `🎉 New Shopify theme has been deployed!
 
             Theme ID: ${themeId}
