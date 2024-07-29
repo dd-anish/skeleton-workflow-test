@@ -27,7 +27,7 @@
               <tr class="table-row__classes {{ section.settings.table-row__classes }}">
                 <td class="table-image__classes {{ section.settings.table-image__classes }}">
                   <a href="{{ item.url }}">
-                    {% assign product_image__classes = section.settings.product-image__classes %}
+                    {% assign product_image__classes = section.settings.product_image__classes %}
                     {% if item.image %}
                       {{ item.image | image_url: width: '300' | image_tag: class: product_image__classes }}
                     {% else %}
