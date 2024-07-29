@@ -61,15 +61,20 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 comment_id: botComment.id,
-                body: `🎉 New Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'.
+                body: `🎉 New 2 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'.
                 
-                The theme can be previewed at: [Click here to preview](${previewUrl})
-                
-                ${botComment.body}`
-              });
-            } else {
-              console.log('No existing bot comment found to edit');
-            }
+                body: `🎉 New Shopify theme has been deployed!
+
+            Theme ID: ${themeId}
+            Store URL: ${storeUrl}
+            Preview: [Click here to preview](${previewUrl})
+
+            Original deployment information:
+            ${botComment.body}`
+                    });
+                  } else {
+                    console.log('No existing bot comment found to edit');
+                  }
 
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
