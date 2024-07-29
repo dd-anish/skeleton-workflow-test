@@ -50,7 +50,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.name,
-              body: `🎉 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'. The theme can be previewed at: [${previewUrl}](${previewUrl})`
+              body: `🎉 Shopify theme has been deployed to theme id '${themeId}' at '${storeUrl}'. The theme can be previewed at new: [${previewUrl}](${previewUrl})`
             })
 
       # Remove the previously created PR specific Shopify theme when PR is closed
