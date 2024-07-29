@@ -95,6 +95,8 @@ jobs:
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SHOPIFY_THEME_DIRECTORY: '.'
+          SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false
 
       # Add a step that always runs for testing
       - name: Echo test
