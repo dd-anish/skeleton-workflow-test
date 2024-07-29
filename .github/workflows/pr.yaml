@@ -1,0 +1,11 @@
+name: PR 
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, closed]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Triggered
+        run: echo "PR event triggered this workflow without -"

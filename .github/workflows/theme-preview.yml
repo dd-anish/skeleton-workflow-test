@@ -3,16 +3,17 @@ name: Shopify Theme Management
 on:
   pull_request:
     types: [opened, synchronize, closed]
+  workflow_dispatch:
 
 jobs:
   manage-theme:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Debug API Authentication
+        if: github.event_name == 'pull_request'
         run: |
           curl -v -X GET "https://${{ secrets.SHOP_STORE }}/admin/api/2023-10/shop.json" \
             -H "Content-Type: application/json" \
@@ -23,7 +24,7 @@ jobs:
 
       # Create and deploy a PR specific Shopify theme when PR is opened/updated
       - name: Deploy PR-specific Shopify theme
-        if: github.event.action != 'closed'
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
         uses: matthew-petrie/shopify-theme-actions@1.2.2
         with:
           ACTION: 'DEPLOYMENT_PREVIEW'
@@ -36,7 +37,7 @@ jobs:
 
       # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
-        if: github.event.action == 'closed'
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
         uses: matthew-petrie/shopify-theme-actions@1.2.2
         with:
           ACTION: 'REMOVE_DEPLOYMENT_PREVIEW_THEME'
@@ -44,3 +45,8 @@ jobs:
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_THEME }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Add a step that always runs for testing
+      - name: Echo test
+        run: |
+          echo "Workflow is running. Event name: ${{ github.event_name }}"
