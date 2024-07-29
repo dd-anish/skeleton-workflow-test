@@ -48,8 +48,6 @@ jobs:
           SHOPIFY_THEME_DIRECTORY: '.'
           SHOPIFY_ALLOW_LIVE_THEME_DEPLOYMENT: false
 
-       
-
       # Add a step that always runs for testing
       - name: Echo test
         run: |
