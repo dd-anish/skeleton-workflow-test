@@ -59,9 +59,9 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '🗑️ The Shopify theme deployment preview has been removed.'
+              body: '🗑️ The Shopify theme deployment preview has been removedd.'
             })
-            
+
       # Add a step that always runs for testing
       - name: Echo test
         run: |
