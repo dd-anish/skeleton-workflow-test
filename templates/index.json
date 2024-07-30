@@ -1,14 +1,22 @@
-/*
-* ------------------------------------------------------------
-* IMPORTANT: The contents of this file are auto-generated.
-*
-* This file may be updated by the Shopify admin theme editor
-* or related systems. Please exercise caution as any changes
-* made to this file may be overwritten.
-* ------------------------------------------------------------
-*/
 {
   "sections": {
+    "dev_countdown_timer_bYUDDX": {
+      "type": "dev__countdown-timer",
+      "settings": {
+        "title": "Huraaaaay, Limited Period Offer",
+        "subtitle": "Be a part of our club, Grab the offer now!",
+        "end_date": "2024-12-31",
+        "container__main": "flex justify-center items-center bg-blue-100",
+        "subcontainer__main": "mx-3 sm:p-7 p-4 rounded-md flex justify-center flex-col gap-6",
+        "title__div": "flex flex-col gap-2 py-4 px-2",
+        "subtitle__div": "text-sm font-semibold text-center leading-8 text-black",
+        "title__h1__div": "text-center sm:text-3xl text-xl font-semibold leading-8",
+        "timer__container": "flex justify-between sm:px-4",
+        "timer_subdiv": "flex flex-col justify-center items-center gap-3",
+        "timer_numbers": "py-3 px-3 bg-gray-900 text-white text-3xl font-semibold rounded-md",
+        "timer__text": "text-sm text-black font-bold"
+      }
+    },
     "dev_service_LDAbFY": {
       "type": "service",
       "settings": {
@@ -36,6 +44,7 @@
     }
   },
   "order": [
+    "dev_countdown_timer_bYUDDX",
     "dev_service_LDAbFY"
   ]
 }
