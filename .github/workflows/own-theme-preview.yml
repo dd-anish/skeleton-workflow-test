@@ -1,4 +1,4 @@
-name: Own Shopify Theme Management
+name: Own Shopify Theme Management Preview
 
 on:
   pull_request:
