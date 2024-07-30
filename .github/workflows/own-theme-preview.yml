@@ -45,14 +45,12 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         env:
           SHOPIFY_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           THEME_NAME: "pr-${{ github.event.pull_request.number }}"
         run: |
-          # Create a new theme for the PR
-          THEME_ID=$(shopify theme push --development --json | jq -r '.id')
+          THEME_ID=$(shopify theme push --store $SHOPIFY_STORE --password $SHOPIFY_PASSWORD --development --json | jq -r '.id')
           echo "THEME_ID=$THEME_ID" >> $GITHUB_ENV
-          # Post the preview URL as a comment on the PR
-          THEME_PREVIEW_URL="https://{{ secrets.SHOP_STORE }}/?preview_theme_id=$THEME_ID"
+          THEME_PREVIEW_URL="https://${SHOPIFY_STORE}/?preview_theme_id=$THEME_ID"
           echo "THEME_PREVIEW_URL=$THEME_PREVIEW_URL" >> $GITHUB_ENV
 
       - name: Comment on PR with preview URL
@@ -72,9 +70,9 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
           SHOPIFY_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
         run: |
-          shopify theme delete --theme $THEME_ID --store $SHOPIFY_STORE --password $SHOPIFY_CLI_THEME_TOKEN --force
+          shopify theme delete --store $SHOPIFY_STORE --password $SHOPIFY_PASSWORD --theme $THEME_ID --force
 
       - name: Comment on PR closure
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -88,3 +86,7 @@ jobs:
               repo: context.repo.repo,
               body: '🗑️ The Shopify theme deployment preview has been removed.'
             })
+
+      - name: Echo test
+        run: |
+          echo "Workflow is running. Event name: ${{ github.event_name }}"
