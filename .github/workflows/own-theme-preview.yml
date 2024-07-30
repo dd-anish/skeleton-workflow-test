@@ -2,7 +2,7 @@ name: Own Shopify Theme Management
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, closed]
+    types: [opened, synchronize, closed]
   workflow_dispatch:
 
 jobs:
@@ -26,45 +26,36 @@ jobs:
       - name: Compile Tailwind CSS
         run: npx tailwindcss -i ./src/tailwind.css -o ./assets/output.css
 
-      - name: Verify Shopify CLI installation
-        run: shopify version
-
-      - name: Login to Shopify
-        env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+      - name: Create Shopify CLI config
         run: |
-          echo '{"myshopifydomain": "${{ secrets.SHOP_STORE }}", "accessToken": "${{ secrets.SHOP_PASSWORD }}"}' > ~/.config/shopify/stores.yml
-          shopify auth
+          mkdir -p ~/.config/shopify
+          echo '{"current_store":"${{ secrets.SHOP_STORE }}"}' > ~/.config/shopify/config
 
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme push --theme="${SHOPIFY_THEME_ID}" --allow-live --unpublished --json
-
-      - name: Log deployment detail
-        run: |
-          echo "Deployment attempt completed"
-          echo "Theme ID: ${{ github.event.pull_request.number }}"
+          shopify theme push --theme="${SHOPIFY_THEME_ID}" --store="${SHOPIFY_FLAG_STORE}" --path=.
 
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme delete --theme="${SHOPIFY_THEME_ID}" --force
+          shopify theme delete --theme="${SHOPIFY_THEME_ID}" --store="${SHOPIFY_FLAG_STORE}" --force
 
       - name: Comment on PR closure
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
-        uses: actions/github-script@v3
+        uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
