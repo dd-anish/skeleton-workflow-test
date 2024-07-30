@@ -12,57 +12,53 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1'
-          bundler-cache: true
-
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
-      - name: Install dependencies
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
+
+      - name: Install dependencies and compile Tailwind CSS
         run: |
-          gem install shopify-cli
           npm install
           npm install -g tailwindcss
-
-      - name: Compile Tailwind CSS
-        run: npx tailwindcss -i ./src/tailwind.css -o ./assets/output.css
+          npx tailwindcss -i ./src/tailwind.css -o ./assets/output.css
 
       - name: Verify theme directory
         run: |
-          ls -la
           if [ ! -f "config/settings_schema.json" ]; then
             echo "Error: This doesn't appear to be a valid Shopify theme directory"
             exit 1
           fi
 
-      - name: Authenticate with Shopify
-        env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
-        run: |
-          echo '{"myshopifydomain":"'$SHOPIFY_FLAG_STORE'","accessToken":"'$SHOPIFY_CLI_THEME_TOKEN'"}' > ~/shopify-store-config.json
-          shopify login --config ~/shopify-store-config.json
-
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme push --theme=$SHOPIFY_THEME_ID --allow-live
+          shopify theme push \
+            --store $SHOPIFY_FLAG_STORE \
+            --password $SHOPIFY_CLI_THEME_TOKEN \
+            --theme $SHOPIFY_THEME_ID \
+            --allow-live \
+            --json
 
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme delete --theme=$SHOPIFY_THEME_ID --force
+          shopify theme delete \
+            --store $SHOPIFY_FLAG_STORE \
+            --password $SHOPIFY_CLI_THEME_TOKEN \
+            --theme $SHOPIFY_THEME_ID \
+            --force
 
       - name: Comment on PR closure
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
