@@ -40,12 +40,21 @@ jobs:
             echo "Error: This doesn't appear to be a valid Shopify theme directory"
             exit 1
           fi
-      
+
       - name: Print variables
         run: |
           echo "Theme ID: pr-${{ github.event.pull_request.number }}"
           echo "Store: ${{ secrets.SHOP_STORE }}"
 
+      - name: Check Shopify CLI version
+        run: shopify version
+
+      - name: List themes before push
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+        run: |
+          shopify theme list --store $SHOPIFY_FLAG_STORE --password $SHOPIFY_CLI_THEME_TOKEN
 
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
@@ -59,7 +68,16 @@ jobs:
             --password $SHOPIFY_CLI_THEME_TOKEN \
             --theme $SHOPIFY_THEME_ID \
             --allow-live \
-            --json
+            --json \
+            --verbose
+
+      - name: List themes after push
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+        run: |
+          shopify theme list --store $SHOPIFY_FLAG_STORE --password $SHOPIFY_CLI_THEME_TOKEN
 
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -78,7 +96,7 @@ jobs:
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         uses: actions/github-script@v6
         with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
