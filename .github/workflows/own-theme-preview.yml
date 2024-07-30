@@ -40,6 +40,12 @@ jobs:
             echo "Error: This doesn't appear to be a valid Shopify theme directory"
             exit 1
           fi
+      
+      - name: Print variables
+        run: |
+          echo "Theme ID: pr-${{ github.event.pull_request.number }}"
+          echo "Store: ${{ secrets.SHOP_STORE }}"
+
 
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
