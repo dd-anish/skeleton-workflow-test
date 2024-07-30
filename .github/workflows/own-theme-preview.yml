@@ -12,6 +12,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -19,8 +25,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          gem install shopify-cli
           npm install
-          npm install -g @shopify/cli @shopify/theme
           npm install -g tailwindcss
 
       - name: Compile Tailwind CSS
