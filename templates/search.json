@@ -1,7 +1,7 @@
 {
   "sections": {
     "template": {
-      "type": "dev__search",
+      "type": "test",
       "settings": {
       }
     }

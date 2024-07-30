@@ -1,12 +1,12 @@
 {
   "sections": {
-    "template": {
-      "type": "dev__customer-account",
+    "customer_account": {
+      "type": "test",
       "settings": {
       }
     }
   },
   "order": [
-    "template"
+    "customer_account"
   ]
 }

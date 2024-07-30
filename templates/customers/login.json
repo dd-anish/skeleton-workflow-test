@@ -1,12 +1,12 @@
 {
   "sections": {
-    "template": {
-      "type": "dev__customer-login",
+    "customer_login": {
+      "type": "test",
       "settings": {
       }
     }
   },
   "order": [
-    "template"
+    "customer_login"
   ]
 }

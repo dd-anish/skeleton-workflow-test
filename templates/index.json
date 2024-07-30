@@ -10,7 +10,7 @@
 {
   "sections": {
     "dev_service_LDAbFY": {
-      "type": "dev__service",
+      "type": "service",
       "settings": {
         "our_service_title": "Our Service",
         "title": "SERVICE",
