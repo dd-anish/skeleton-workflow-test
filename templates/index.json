@@ -15,6 +15,7 @@
         "timer_subdiv": "flex flex-col justify-center items-center gap-3",
         "timer_numbers": "py-3 px-3 bg-gray-900 text-white text-3xl font-semibold rounded-md",
         "timer__text": "text-sm text-black font-bold"
+
       }
     },
     "dev_service_LDAbFY": {
