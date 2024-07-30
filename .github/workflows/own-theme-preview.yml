@@ -1,0 +1,75 @@
+name: Own Theme Management
+
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+  workflow_dispatch:
+
+jobs:
+  manage-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli @shopify/theme
+
+      - name: Debug API Authentication
+        if: github.event_name == 'pull_request'
+        run: |
+          curl -v -X GET "https://${{ secrets.SHOP_STORE }}/admin/api/2023-10/shop.json" \
+            -H "Content-Type: application/json" \
+            -H "X-Shopify-Access-Token: ${{ secrets.SHOP_PASSWORD }}"
+        env:
+          SHOP_STORE: ${{ secrets.SHOP_STORE }}
+          SHOP_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
+
+      # Create and deploy a PR specific Shopify theme when PR is opened/updated
+      - name: Deploy PR-specific Shopify theme
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
+        run: |
+          theme deploy --allow-live --unpublished --theme-id="${SHOPIFY_THEME_ID}" --no-update
+
+      - name: Log deployment detail
+        run: |
+          echo "Deployment attempt completed"
+          echo "Theme ID: ${{ github.event.pull_request.number }}"
+
+      # Remove the previously created PR specific Shopify theme when PR is closed
+      - name: Remove PR-specific Shopify theme
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
+        run: |
+          theme delete --theme-id="${SHOPIFY_THEME_ID}" --force
+
+      # Add a comment when the deployment preview is removed
+      - name: Comment on PR closure
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🗑️ The Shopify theme deployment preview has been removed.'
+            })
+
+      # Add a step that always runs for testing
+      - name: Echo test
+        run: |
+          echo "Workflow is running. Event name: ${{ github.event_name }}"
