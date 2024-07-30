@@ -1,6 +1,6 @@
 {
     "sections": {
-      "template": {
+      "cart": {
         "type": "dev__cart",
         "blocks": {
           "subtotal": {
@@ -29,6 +29,6 @@
       }
     },
     "order": [
-      "template"
+      "cart"
     ]
   }

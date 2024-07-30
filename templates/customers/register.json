@@ -1,12 +1,12 @@
 {
   "sections": {
-    "template": {
+    "customer_register": {
       "type": "dev__customer-register",
       "settings": {
       }
     }
   },
   "order": [
-    "template"
+    "customer_register"
   ]
 }

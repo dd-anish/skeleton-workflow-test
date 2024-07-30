@@ -1,12 +1,12 @@
 {
   "sections": {
-    "template": {
-      "type": "dev__list-collections",
+    "list-collections": {
+      "type": "list-collections",
       "settings": {
       }
     }
   },
   "order": [
-    "template"
+    "list-collections"
   ]
 }

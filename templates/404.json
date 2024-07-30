@@ -1,12 +1,12 @@
 {
   "sections": {
-    "template": {
+    "main_404": {
       "type": "dev__main-404",
       "settings": {
       }
     }
   },
   "order": [
-    "template"
+    "main_404"
   ]
 }
