@@ -2,7 +2,7 @@ name: Shopify Theme Management
 
 on:
   pull_request:
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
 
 jobs:
