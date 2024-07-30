@@ -1,7 +1,7 @@
 {
   "sections": {
     "customer_login": {
-      "type": "dev__customer-login",
+      "type": "test",
       "settings": {
       }
     }

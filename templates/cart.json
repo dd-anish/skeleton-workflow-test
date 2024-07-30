@@ -1,7 +1,7 @@
 {
     "sections": {
       "cart": {
-        "type": "dev__cart",
+        "type": "cart",
         "blocks": {
           "subtotal": {
             "type": "subtotal",

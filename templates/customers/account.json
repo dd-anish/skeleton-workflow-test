@@ -1,7 +1,7 @@
 {
   "sections": {
     "customer_account": {
-      "type": "dev__customer-account",
+      "type": "test",
       "settings": {
       }
     }

@@ -1,7 +1,7 @@
 {
   "sections": {
     "main_404": {
-      "type": "dev__main-404",
+      "type": "test",
       "settings": {
       }
     }

@@ -1,7 +1,7 @@
 {
   "sections": {
     "customer_register": {
-      "type": "dev__customer-register",
+      "type": "test",
       "settings": {
       }
     }
