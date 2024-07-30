@@ -2,7 +2,7 @@ name: Own Shopify Theme Management
 
 on:
   pull_request:
-    types: [opened, synchronize, closed]
+    types: [opened, synchronize, reopened, closed]
   workflow_dispatch:
 
 jobs:
@@ -15,39 +15,32 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'  # Updated to a more recent LTS version
+          node-version: '18'
 
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1'  # Use a recent Ruby version
-          bundler-cache: true  # This will install and cache bundler and your gems
-
-      - name: Install Shopify CLI
+      - name: Install dependencies
         run: |
-          gem install shopify-cli
+          npm install
           npm install -g @shopify/cli @shopify/theme
-          echo "$(npm bin -g)" >> $GITHUB_PATH
+          npm install -g tailwindcss
+
+      - name: Compile Tailwind CSS
+        run: npx tailwindcss -i ./src/tailwind.css -o ./assets/output.css
 
       - name: Verify Shopify CLI installation
         run: shopify version
 
-      - name: Debug API Authentication
-        if: github.event_name == 'pull_request'
-        run: |
-          curl -v -X GET "https://${{ secrets.SHOP_STORE }}/admin/api/2023-10/shop.json" \
-            -H "Content-Type: application/json" \
-            -H "X-Shopify-Access-Token: ${{ secrets.SHOP_PASSWORD }}"
+      - name: Login to Shopify
         env:
-          SHOP_STORE: ${{ secrets.SHOP_STORE }}
-          SHOP_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+        run: |
+          echo '{"myshopifydomain": "${{ secrets.SHOP_STORE }}", "accessToken": "${{ secrets.SHOP_PASSWORD }}"}' > ~/.config/shopify/stores.yml
+          shopify auth
 
-      # Create and deploy a PR specific Shopify theme when PR is opened/updated
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
         run: |
           shopify theme push --theme="${SHOPIFY_THEME_ID}" --allow-live --unpublished --json
@@ -57,17 +50,14 @@ jobs:
           echo "Deployment attempt completed"
           echo "Theme ID: ${{ github.event.pull_request.number }}"
 
-      # Remove the previously created PR specific Shopify theme when PR is closed
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
         run: |
           shopify theme delete --theme="${SHOPIFY_THEME_ID}" --force
 
-      # Add a comment when the deployment preview is removed
       - name: Comment on PR closure
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         uses: actions/github-script@v3
@@ -81,7 +71,6 @@ jobs:
               body: '🗑️ The Shopify theme deployment preview has been removed.'
             })
 
-      # Add a step that always runs for testing
       - name: Echo test
         run: |
           echo "Workflow is running. Event name: ${{ github.event_name }}"
