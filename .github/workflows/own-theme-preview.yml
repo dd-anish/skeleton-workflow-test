@@ -32,23 +32,37 @@ jobs:
       - name: Compile Tailwind CSS
         run: npx tailwindcss -i ./src/tailwind.css -o ./assets/output.css
 
+      - name: Verify theme directory
+        run: |
+          ls -la
+          if [ ! -f "config/settings_schema.json" ]; then
+            echo "Error: This doesn't appear to be a valid Shopify theme directory"
+            exit 1
+          fi
+
+      - name: Authenticate with Shopify
+        env:
+          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
+        run: |
+          echo '{"myshopifydomain":"'$SHOPIFY_FLAG_STORE'","accessToken":"'$SHOPIFY_CLI_THEME_TOKEN'"}' > ~/shopify-store-config.json
+          shopify login --config ~/shopify-store-config.json
+
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme push -s ${{ secrets.SHOP_STORE }} -t ${{ secrets.SHOP_PASSWORD }} --theme=$SHOPIFY_THEME_ID --allow-live
+          shopify theme push --theme=$SHOPIFY_THEME_ID --allow-live
 
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
           SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme delete -s ${{ secrets.SHOP_STORE }} -t ${{ secrets.SHOP_PASSWORD }} --theme=$SHOPIFY_THEME_ID --force
+          shopify theme delete --theme=$SHOPIFY_THEME_ID --force
 
       - name: Comment on PR closure
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
