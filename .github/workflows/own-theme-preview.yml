@@ -1,4 +1,4 @@
-name: Own Shopify Management
+name: Own Shopify Theme Management
 
 on:
   pull_request:
@@ -15,10 +15,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '18'  # Updated to a more recent LTS version
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'  # Use a recent Ruby version
+          bundler-cache: true  # This will install and cache bundler and your gems
 
       - name: Install Shopify CLI
         run: |
+          gem install shopify-cli
           npm install -g @shopify/cli @shopify/theme
           echo "$(npm bin -g)" >> $GITHUB_PATH
 
