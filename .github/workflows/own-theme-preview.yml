@@ -1,4 +1,4 @@
-name: Own Shopify Theme Management Preview
+name: Own Shopify Theme Management
 
 on:
   pull_request:
@@ -41,56 +41,40 @@ jobs:
             exit 1
           fi
 
-      - name: Print variables
-        run: |
-          echo "Theme ID: pr-${{ github.event.pull_request.number }}"
-          echo "Store: ${{ secrets.SHOP_STORE }}"
-
-      - name: Check Shopify CLI version
-        run: shopify version
-
-      - name: List themes before push
-        env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
-        run: |
-          shopify theme list --store $SHOPIFY_FLAG_STORE --password $SHOPIFY_CLI_THEME_TOKEN
-
       - name: Deploy PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
         env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_STORE: ${{ secrets.SHOP_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
-          SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
+          THEME_NAME: "pr-${{ github.event.pull_request.number }}"
         run: |
-          shopify theme push \
-            --store $SHOPIFY_FLAG_STORE \
-            --password $SHOPIFY_CLI_THEME_TOKEN \
-            --theme $SHOPIFY_THEME_ID \
-            --allow-live \
-            --json \
-            --verbose
+          # Create a new theme for the PR
+          THEME_ID=$(shopify theme push --development --json | jq -r '.id')
+          echo "THEME_ID=$THEME_ID" >> $GITHUB_ENV
+          # Post the preview URL as a comment on the PR
+          THEME_PREVIEW_URL="https://{{ secrets.SHOP_STORE }}/?preview_theme_id=$THEME_ID"
+          echo "THEME_PREVIEW_URL=$THEME_PREVIEW_URL" >> $GITHUB_ENV
 
-      - name: List themes after push
+      - name: Comment on PR with preview URL
         if: github.event_name == 'pull_request' && github.event.action != 'closed'
-        env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
-          SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
-        run: |
-          shopify theme list --store $SHOPIFY_FLAG_STORE --password $SHOPIFY_CLI_THEME_TOKEN
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🔍 Preview your Shopify theme [here](${process.env.THEME_PREVIEW_URL}).`
+            })
 
       - name: Remove PR-specific Shopify theme
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
         env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_STORE: ${{ secrets.SHOP_STORE }}
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
-          SHOPIFY_THEME_ID: pr-${{ github.event.pull_request.number }}
         run: |
-          shopify theme delete \
-            --store $SHOPIFY_FLAG_STORE \
-            --password $SHOPIFY_CLI_THEME_TOKEN \
-            --theme $SHOPIFY_THEME_ID \
-            --force
+          shopify theme delete --theme $THEME_ID --store $SHOPIFY_STORE --password $SHOPIFY_CLI_THEME_TOKEN --force
 
       - name: Comment on PR closure
         if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -104,7 +88,3 @@ jobs:
               repo: context.repo.repo,
               body: '🗑️ The Shopify theme deployment preview has been removed.'
             })
-
-      - name: Echo test
-        run: |
-          echo "Workflow is running. Event name: ${{ github.event_name }}"
