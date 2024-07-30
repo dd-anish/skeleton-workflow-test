@@ -1,4 +1,4 @@
-name: Own Theme Management
+name: Shopify Theme Management
 
 on:
   pull_request:
@@ -18,7 +18,12 @@ jobs:
           node-version: '16'
 
       - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+        run: |
+          npm install -g @shopify/cli @shopify/theme
+          echo "$(npm bin -g)" >> $GITHUB_PATH
+
+      - name: Verify Shopify CLI installation
+        run: shopify version
 
       - name: Debug API Authentication
         if: github.event_name == 'pull_request'
@@ -38,7 +43,7 @@ jobs:
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
         run: |
-          theme deploy --allow-live --unpublished --theme-id="${SHOPIFY_THEME_ID}" --no-update
+          shopify theme push --theme="${SHOPIFY_THEME_ID}" --allow-live --unpublished --json
 
       - name: Log deployment detail
         run: |
@@ -53,7 +58,7 @@ jobs:
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOP_PASSWORD }}
           SHOPIFY_THEME_ID: ${{ github.event.pull_request.number }}
         run: |
-          theme delete --theme-id="${SHOPIFY_THEME_ID}" --force
+          shopify theme delete --theme="${SHOPIFY_THEME_ID}" --force
 
       # Add a comment when the deployment preview is removed
       - name: Comment on PR closure
