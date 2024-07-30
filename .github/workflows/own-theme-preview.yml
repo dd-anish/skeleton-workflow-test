@@ -48,7 +48,10 @@ jobs:
           SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
           THEME_NAME: "pr-${{ github.event.pull_request.number }}"
         run: |
-          THEME_ID=$(shopify theme push --store $SHOPIFY_STORE --password $SHOPIFY_PASSWORD --development --json | jq -r '.id')
+          OUTPUT=$(shopify theme push --store $SHOPIFY_STORE --password $SHOPIFY_PASSWORD --development --json)
+          echo "Shopify CLI Output: $OUTPUT" # Debug output
+          THEME_ID=$(echo $OUTPUT | jq -r '.id')
+          echo "Extracted Theme ID: $THEME_ID" # Debug output
           echo "THEME_ID=$THEME_ID" >> $GITHUB_ENV
           THEME_PREVIEW_URL="https://${SHOPIFY_STORE}/?preview_theme_id=$THEME_ID"
           echo "THEME_PREVIEW_URL=$THEME_PREVIEW_URL" >> $GITHUB_ENV
