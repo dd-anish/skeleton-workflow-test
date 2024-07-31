@@ -11,49 +11,67 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+
       - name: Configure Git
         run: |
           git config user.name "dd-anish"
           git config user.email "anish@deardigital.com"
-      - name: Check out the development-preview branch
-        run: git checkout development-preview || git checkout -b development-preview
-      - name: Fetch PR branch
-        run: git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
-      - name: Reset development-preview to PR branch
+
+      - name: Check current preview status
+        id: check_preview
         run: |
-          git checkout development-preview
-          git reset --hard pr-branch
-          git push origin development-preview --force
-      
-      # Add steps here to deploy your theme to your store's preview environment
-      # This will depend on your specific setup and store platform
+          if [ -f .preview_status ]; then
+            CURRENT_PR=$(cat .preview_status)
+            if [ "$CURRENT_PR" != "${{ github.event.issue.number }}" ]; then
+              echo "status=occupied" >> $GITHUB_OUTPUT
+              echo "current_pr=$CURRENT_PR" >> $GITHUB_OUTPUT
+            else
+              echo "status=same_pr" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "status=available" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Handle occupied preview
+        if: steps.check_preview.outputs.status == 'occupied'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const comment = `The preview theme is currently being used by PR #${{ steps.check_preview.outputs.current_pr }}. Please close that preview first by commenting '!close_preview' on that PR before requesting a new preview.`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
+
+      - name: Deploy preview
+        if: steps.check_preview.outputs.status != 'occupied'
+        run: |
+          # Your deployment steps here
+          echo "${{ github.event.issue.number }}" > .preview_status
+          git add .preview_status
+          git commit -m "Update preview status for PR #${{ github.event.issue.number }}"
+          git push origin development-preview
 
       - name: Generate preview link
+        if: steps.check_preview.outputs.status != 'occupied'
         id: preview_link
         run: |
           PREVIEW_URL="https://${{ secrets.SHOP_STORE }}/?preview_theme_id=129969324118"
           echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
       - name: Post comment with preview link
+        if: steps.check_preview.outputs.status != 'occupied'
         uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            try {
-              const { owner, repo } = context.repo;
-              const issue_number = context.issue.number;
-              
-              console.log(`Posting comment to ${owner}/${repo}#${issue_number}`);
-              
-              await github.rest.issues.createComment({
-                owner: owner,
-                repo: repo,
-                issue_number: issue_number,
-                body: `You can see the [Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})`
-              });
-              
-              console.log('Comment posted successfully');
-            } catch (error) {
-              console.error('Error posting comment:', error);
-              core.setFailed(`Action failed with error: ${error}`);
-            }
+            const comment = `You can see the [Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})\n\nTo close this preview when you're done, comment '!close_preview' on this PR.`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: comment
+            });
