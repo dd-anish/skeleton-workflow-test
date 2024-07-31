@@ -39,9 +39,21 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              body: `[Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})`
-            })
+            try {
+              const { owner, repo } = context.repo;
+              const issue_number = context.issue.number;
+              
+              console.log(`Posting comment to ${owner}/${repo}#${issue_number}`);
+              
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: issue_number,
+                body: `[Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})`
+              });
+              
+              console.log('Comment posted successfully');
+            } catch (error) {
+              console.error('Error posting comment:', error);
+              core.setFailed(`Action failed with error: ${error}`);
+            }
