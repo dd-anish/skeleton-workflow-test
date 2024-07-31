@@ -87,8 +87,13 @@ jobs:
         run: |
           RESPONSE=$(curl -X POST "https://${{ env.SHOP_STORE }}/admin/api/2023-04/themes/${{ env.THEME_ID }}/preview.json" \
             -H "X-Shopify-Access-Token: ${{ secrets.SHOP_PASSWORD }}")
-          echo "API Response: $RESPONSE"  # Add this line to debug the response
+          echo "API Response: $RESPONSE"
+          echo "API Response (Formatted): $(echo $RESPONSE | jq .)"
           TOKEN=$(echo $RESPONSE | jq -r '.preview.token')
+          if [ "$TOKEN" == "null" ]; then
+            echo "Error: Unable to fetch the preview token. API Response: $RESPONSE" >&2
+            exit 1
+          fi
           PREVIEW_URL="https://${{ env.SHOP_STORE }}/?preview_theme_id=${{ env.THEME_ID }}&preview_token=$TOKEN"
           echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
@@ -114,8 +119,4 @@ jobs:
             const message = '${{ steps.close_preview.outputs.closed }}' === 'true'
               ? 'Preview has been closed successfully.'
               : 'This PR does not currently have an active preview.';
-            await github.rest.issues.createComment({
-              ...context.repo,
-              issue_number: context.issue.number,
-              body: message
-            });
+            await github.rest.
