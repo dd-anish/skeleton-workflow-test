@@ -96,15 +96,15 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-      - name: Update development-preview-test branch
+      - name: Update development-preview branch
         run: |
           git fetch origin
-          git checkout -B development-preview-test origin/main
+          git checkout -B development-preview origin/main
           git reset --hard origin/main
           git clean -fd
           git fetch origin ${{ steps.pr_details.outputs.branch }}
           git merge --no-ff origin/${{ steps.pr_details.outputs.branch }}
-          git push -f origin development-preview-test
+          git push -f origin development-preview
 
       - name: Generate Shopify theme preview link
         id: create_preview
@@ -130,7 +130,7 @@ jobs:
               repo: context.repo.repo,
               body: `Preview is ready for the latest changes in this PR. You can now check the following:
 
-              1. Preview Branch: https://github.com/${context.repo.owner}/${context.repo.repo}/tree/development-preview-test
+              1. Preview Branch: https://github.com/${context.repo.owner}/${context.repo.repo}/tree/development-preview
               2. Shopify Theme Preview: ${previewUrl}
 
               Please review and provide your feedback. Once you're done, comment '!unlock-preview' on this PR to allow new preview generations. Note that only the user who initiated this preview can unlock it.`
