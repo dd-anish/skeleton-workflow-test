@@ -1,27 +1,5 @@
 {
   "sections": {
-    "about_us_kjFKCV": {
-      "type": "about-us",
-      "settings": {
-        "about_us__container_left_heading": "About Us",
-        "about_us__container_right_small_header": "Our Story 2",
-        "about_us__container_right_sub_header": "Kyiv LuxeBouquets",
-        "about_us__container_right_description": "<p>We are a modern local floral studio, which specializes in the design and delivery of unique bouquets. We have the best florists who carefully select each look, our studio cooperates directly with farms for growing different flowers, so we always have fresh flowers, which are collected by our florists in exquisite bouquets. We have a collection of fresh bouquets, collections of dried bouquets, house plants, as well as fragrant candles from luxury brands to create the perfect atmosphere. Make someone's day amazing by sending flowers, plants and gifts the same or next day. Ordering flowers online has never been easier.<\/p>",
-        "about_us__container_right_button_label": "Learn More",
-        "about_us__container_right_button_link": "",
-        "about_us__container": "flex flex-col lg:flex-row w-full",
-        "about_us__container_left": "w-full px-4 py-10 border-brand-black border border-t-0 gap-4 md:p-20 lg:border-r-0",
-        "about_us__container_left_heading_div_classes": "lg:sticky lg:top-[5.56vw]",
-        "about_us__container_left_heading_classes": "text-brand-black text-mobile-heading-2 font-semibold md:text-desktop-heading-2",
-        "about_us__container_right": "w-full px-4 py-10 border-brand-black border border-t-0 md:p-20 lg:border-r-0 lg:border-l-1",
-        "about_us__container_right_content": "flex flex-col gap-6",
-        "about_us__container_right_small_header_classes": "uppercase text-brand-black text-mobile-overline font-medium md:text-desktop-overline",
-        "about_us__container_right_sub_header_classes": "text-brand-black text-mobile-heading-3 font-medium md:text-desktop-heading-3",
-        "about_us__container_right_description_classes": "text-mobile-body font-regular opacity-90",
-        "about_us__container_right_button_div": "flex items-start justify-center mt-16 md:inline-block",
-        "about_us__container_right_button_classes": "text-brand-black uppercase hover:bg-brand-black hover:text-white text-mobile-button font-medium border border-brand-black pt-4 pb-[14px] px-6 tracking-[0.025em] w-full md:w-[175px] md:h-[56px] md:tracking-[0.03em] md:text-desktop-button"
-      }
-    },
     "dev_contact_form_qfDxUf": {
       "type": "dev__contact-form",
       "settings": {
@@ -36,70 +14,9 @@
         "contact__style--textarea": "w-full px-2 py-1 text-sm md:text-base border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
         "contact__submit-button": "py-1 px-2 block mx-auto md:py-3 md:px-5 md:w-full text-sm font-medium text-center bg-blue-600 text-white rounded-md border cursor-pointer bg-primary-700 border-primary-600 hover:bg-blue-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
       }
-    },
-    "shop_promo_WfMM4B": {
-      "type": "shop-promo",
-      "settings": {
-        "title": "Discover Our Beautiful Bouquets",
-        "description": "<p>Explore our collection of exquisite bouquets and surprise your loved ones with the perfect gift. Click the button below to start shopping.<\/p>",
-        "button_link": "",
-        "button_text": "Shop now",
-        "shop-promo": "flex flex-col gap-8 px-4 py-10 border-brand-black border-y text-center items-center md:p-20 md:gap-10",
-        "shop-promo__content": "space-y-4",
-        "shop-promo__title": "text-mobile-heading-2 font-semibold md:text-desktop-heading-2",
-        "shop-promo__description": "text-mobile-subtitle font-medium opacity-90",
-        "shop-promo__button": "text-mobile-button font-medium uppercase flex gap-3 items-center justify-center bg-black text-white border-brand-black hover:bg-transparent hover:text-black border transition fade duration 300 ease-out h-[46px] w-[270px] md:text-desktop-button tracking-[0.025em] md:tracking-[0.03em] md:h-[56px]",
-        "shop-promo__button_SVG": "w-5 h-5"
-      }
-    },
-    "dev_countdown_timer_bYUDDX": {
-      "type": "dev__countdown-timer",
-      "settings": {
-        "title": "Huraaaaay, Limited Period Offer",
-        "subtitle": "Be a part of our club, Grab the offer now!",
-        "end_date": "2024-12-31",
-        "container__main": "flex justify-center items-center bg-blue-100",
-        "subcontainer__main": "mx-3 sm:p-7 p-4 rounded-md flex justify-center flex-col gap-6",
-        "title__div": "flex flex-col gap-2 py-4 px-2",
-        "subtitle__div": "text-sm font-semibold text-center leading-8 text-black",
-        "title__h1__div": "text-center sm:text-3xl text-xl font-semibold leading-8",
-        "timer__container": "flex justify-between sm:px-4",
-        "timer_subdiv": "flex flex-col justify-center items-center gap-3",
-        "timer_numbers": "py-3 px-3 bg-gray-900 text-white text-3xl font-semibold rounded-md",
-        "timer__text": "text-sm text-black font-bold"
-      }
-    },
-    "dev_service_LDAbFY": {
-      "type": "service",
-      "settings": {
-        "our_service_title": "Our Service",
-        "title": "SERVICE",
-        "heading": "Flower Subscriptions",
-        "paragraph": "Experience the convenience and savings of regular flower deliveries with our flexible subscription service - up to 30% more profitable than one-time purchases.",
-        "button_link": "",
-        "button_text": "SUBSCRIBE NOW",
-        "tw-our-service": "py-10 px-4 md:p-20 md:text-center lg:py-20 lg:px-2.5 border-[1px] border-brand-black",
-        "tw-our-service__title": "font-semibold text-mobile-heading-2 md:text-desktop-heading-2",
-        "tw-service": "lg:flex lg:justify-center lg:items-center border-b-[1px] border-x-[1px] border-brand-black",
-        "tw-service__left-col": "lg:w-1\/2",
-        "tw-service__image": "w-full object-cover object-center md:aspect-[1.536] lg:aspect-square border-b-[1px] lg:border-r-[1px] lg:border-b-0 border-brand-black",
-        "tw-service__right-col": "px-4 py-10 text-center md:p-20 lg:w-1\/2",
-        "tw-service__content": "flex flex-col gap-16",
-        "tw-service__text-content": "flex flex-col gap-6",
-        "tw-service__title": "font-medium text-mobile-overline md:text-desktop-overline",
-        "tw-service__heading-paragraph": "flex flex-col gap-4",
-        "tw-service__heading": "font-semibold text-mobile-heading-2 md:text-desktop-heading-2",
-        "tw-service__paragraph": "font-regular text-mobile-body md:text-mobile-subtitle md:font-medium",
-        "tw-service__button": "py-4 px-6 border-[1px] border-brand-black md:py-0 md:px-0 md:border-0",
-        "tw-service__link-button": "md:py-4 md:px-6 md:border-[1px] border-brand-black font-medium text-mobile-button md:text-desktop-button"
-      }
     }
   },
   "order": [
-    "about_us_kjFKCV",
-    "dev_contact_form_qfDxUf",
-    "shop_promo_WfMM4B",
-    "dev_countdown_timer_bYUDDX",
-    "dev_service_LDAbFY"
+    "dev_contact_form_qfDxUf"
   ]
 }
