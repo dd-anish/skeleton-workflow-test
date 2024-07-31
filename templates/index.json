@@ -1,19 +1,5 @@
 {
   "sections": {
-    "dev_card_our_team_CmxPtq": {
-      "type": "dev__card-OurTeam",
-      "settings": {
-        "section_title": "Our Team",
-        "section_subtitle": "Have a look at our team!!",
-        "image_width": 400,
-        "image_height": 200,
-        "card__main": "bg-gray-900 py-8 px-4 mx-auto lg:py-16 lg:px-6",
-        "card__main__div": "mx-auto max-w-screen-sm text-center mb-8 lg:mb-16",
-        "card__main__title": "mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white",
-        "card__main__subtitle": "font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400",
-        "card__block_div": "grid gap-8 mb-6 lg:mb-16 md:grid-cols-2"
-      }
-    },
     "dev_contact_form_qfDxUf": {
       "type": "dev__contact-form",
       "settings": {
@@ -28,10 +14,25 @@
         "contact__style--textarea": "w-full px-2 py-1 text-sm md:text-base border rounded-md bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500",
         "contact__submit-button": "py-1 px-2 block mx-auto md:py-3 md:px-5 md:w-full text-sm font-medium text-center bg-blue-600 text-white rounded-md border cursor-pointer bg-primary-700 border-primary-600 hover:bg-blue-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
       }
+    },
+    "shop_promo_aXbCAb": {
+      "type": "shop-promo",
+      "settings": {
+        "title": "Discover Our Beautiful Bouquets",
+        "description": "<p>Explore our collection of exquisite bouquets and surprise your loved ones with the perfect gift. Click the button below to start shopping.<\/p>",
+        "button_link": "",
+        "button_text": "Shop now",
+        "shop-promo": "flex flex-col gap-8 px-4 py-10 border-brand-black border-y text-center items-center md:p-20 md:gap-10",
+        "shop-promo__content": "space-y-4",
+        "shop-promo__title": "text-mobile-heading-2 font-semibold md:text-desktop-heading-2",
+        "shop-promo__description": "text-mobile-subtitle font-medium opacity-90",
+        "shop-promo__button": "text-mobile-button font-medium uppercase flex gap-3 items-center justify-center bg-black text-white border-brand-black hover:bg-transparent hover:text-black border transition fade duration 300 ease-out h-[46px] w-[270px] md:text-desktop-button tracking-[0.025em] md:tracking-[0.03em] md:h-[56px]",
+        "shop-promo__button_SVG": "w-5 h-5"
+      }
     }
   },
   "order": [
-    "dev_card_our_team_CmxPtq",
-    "dev_contact_form_qfDxUf"
+    "dev_contact_form_qfDxUf",
+    "shop_promo_aXbCAb"
   ]
 }
