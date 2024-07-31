@@ -1,9 +1,7 @@
 name: Preview Deployment
-
 on:
   issue_comment:
     types: [created]
-
 jobs:
   preview-deployment:
     if: github.event.comment.body == '!preview'
@@ -13,20 +11,37 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-
       - name: Configure Git
         run: |
           git config user.name "dd-anish"
           git config user.email "anish@deardigital.com"
-
       - name: Check out the development-preview branch
         run: git checkout development-preview || git checkout -b development-preview
-
       - name: Fetch PR branch
         run: git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
-
       - name: Reset development-preview to PR branch
         run: |
           git checkout development-preview
           git reset --hard pr-branch
           git push origin development-preview --force
+      
+      # Add steps here to deploy your theme to your store's preview environment
+      # This will depend on your specific setup and store platform
+
+      - name: Generate preview link
+        id: preview_link
+        run: |
+          PREVIEW_URL="https://${{ secrets.SHOP_STORE }}/admin/themes/129969324118/editor"
+          echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
+
+      - name: Post comment with preview link
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.name,
+              body: `[Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})`
+            })
