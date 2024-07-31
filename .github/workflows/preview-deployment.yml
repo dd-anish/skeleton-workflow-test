@@ -1,7 +1,15 @@
 name: Preview Deployment
+
 on:
   issue_comment:
     types: [created]
+
+env:
+  THEME_ID: '129969324118'
+  USER_NAME: 'dd-anish'
+  USER_EMAIL: 'anish@deardigital.com'
+  SHOP_STORE: 'your-store.myshopify.com'
+
 jobs:
   preview-deployment:
     if: github.event.comment.body == '!preview' || github.event.comment.body == '!close_preview'
@@ -14,8 +22,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "dd-anish"
-          git config user.email "anish@deardigital.com"
+          git config user.name "${{ env.USER_NAME }}"
+          git config user.email "${{ env.USER_EMAIL }}"
 
       - name: Check out the development-preview branch
         run: git checkout development-preview || git checkout -b development-preview
@@ -77,7 +85,7 @@ jobs:
         if: github.event.comment.body == '!preview' && steps.check_preview.outputs.status != 'occupied'
         id: preview_link
         run: |
-          PREVIEW_URL="https://${{ secrets.SHOP_STORE }}/?preview_theme_id=129969324118"
+          PREVIEW_URL="https://${{ env.SHOP_STORE }}/?preview_theme_id=${{ env.THEME_ID }}"
           echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
       - name: Post comment with preview link
