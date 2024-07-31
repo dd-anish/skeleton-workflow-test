@@ -50,15 +50,16 @@ jobs:
 
       - name: Close preview
         if: github.event.comment.body == '!close_preview'
+        id: close_preview
         run: |
           if [ -f .preview_status ] && [ "$(cat .preview_status)" == "${{ github.event.issue.number }}" ]; then
             rm .preview_status
             git add .preview_status
             git commit -m "Close preview for PR #${{ github.event.issue.number }}"
             git push origin development-preview
-            echo "Preview closed successfully."
+            echo "closed=true" >> $GITHUB_OUTPUT
           else
-            echo "This PR does not currently have an active preview."
+            echo "closed=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Fetch and reset to PR branch
@@ -98,7 +99,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const message = steps.close_preview.outputs.closed == 'true'
+            const message = '${{ steps.close_preview.outputs.closed }}' === 'true'
               ? 'Preview has been closed successfully.'
               : 'This PR does not currently have an active preview.';
             await github.rest.issues.createComment({
