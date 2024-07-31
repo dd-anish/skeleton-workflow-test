@@ -22,17 +22,11 @@ jobs:
       - name: Check out the development-preview branch
         run: git checkout development-preview || git checkout -b development-preview
 
-      - name: Remove all files from development-preview
-        run: |
-          git rm -rf .
-          git clean -fd
-          git commit -m "Clear development-preview branch"
-
-      - name: Check out the PR branch
+      - name: Fetch PR branch
         run: git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
 
-      - name: Merge PR branch into development-preview
+      - name: Reset development-preview to PR branch
         run: |
           git checkout development-preview
-          git merge pr-branch --allow-unrelated-histories --no-ff -m "Merging PR #${{ github.event.issue.number }} into development-preview"
+          git reset --hard pr-branch
           git push origin development-preview --force
