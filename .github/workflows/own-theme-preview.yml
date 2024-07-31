@@ -1,0 +1,96 @@
+name: Own Shopify Theme Management
+
+on:
+  pull_request:
+    types: [opened, synchronize, closed]
+  workflow_dispatch:
+
+jobs:
+  manage-theme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.1'
+          bundler-cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          gem install bundler
+          gem install shopify-cli
+          npm install
+          npm install -g @shopify/cli @shopify/theme
+          npm install -g tailwindcss
+
+      - name: Compile Tailwind CSS
+        run: npx tailwindcss -i ./src/tailwind.css -o ./assets/output.css
+
+      - name: Verify theme directory
+        run: |
+          if [ ! -f "config/settings_schema.json" ]; then
+            echo "Error: This doesn't appear to be a valid Shopify theme directory"
+            exit 1
+          fi
+
+      - name: Deploy PR-specific Shopify theme
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
+          THEME_NAME: "pr-${{ github.event.pull_request.number }}"
+        run: |
+          OUTPUT=$(shopify theme push --store $SHOPIFY_STORE --password $SHOPIFY_PASSWORD --development --json)
+          echo "Shopify CLI Output: $OUTPUT" # Debug output
+          THEME_ID=$(echo $OUTPUT | jq -r '.theme.id')
+          echo "Extracted Theme ID: $THEME_ID" # Debug output
+          echo "THEME_ID=$THEME_ID" >> $GITHUB_ENV
+          THEME_PREVIEW_URL="https://${SHOPIFY_STORE}/?preview_theme_id=$THEME_ID"
+          echo "THEME_PREVIEW_URL=$THEME_PREVIEW_URL" >> $GITHUB_ENV
+
+
+      - name: Comment on PR with preview URL
+        if: github.event_name == 'pull_request' && github.event.action != 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🔍 Preview your Shopify theme [here](${process.env.THEME_PREVIEW_URL}).`
+            })
+
+      - name: Remove PR-specific Shopify theme
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        env:
+          SHOPIFY_STORE: ${{ secrets.SHOP_STORE }}
+          SHOPIFY_PASSWORD: ${{ secrets.SHOP_PASSWORD }}
+        run: |
+          shopify theme delete --store $SHOPIFY_STORE --password $SHOPIFY_PASSWORD --theme $THEME_ID --force
+
+      - name: Comment on PR closure
+        if: github.event_name == 'pull_request' && github.event.action == 'closed'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🗑️ The Shopify theme deployment preview has been removed.'
+            })
+
+      - name: Echo test
+        run: |
+          echo "Workflow is running. Event name: ${{ github.event_name }}"
