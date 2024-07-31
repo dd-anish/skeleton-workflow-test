@@ -31,7 +31,7 @@ jobs:
       - name: Generate preview link
         id: preview_link
         run: |
-          PREVIEW_URL="https://${{ secrets.SHOP_STORE }}/admin/themes/129969324118/editor"
+          PREVIEW_URL="https://${{ secrets.SHOP_STORE }}/?preview_theme_id=129969324118"
           echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
       - name: Post comment with preview link
