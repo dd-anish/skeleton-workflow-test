@@ -4,7 +4,7 @@ on:
     types: [created]
 jobs:
   preview-deployment:
-    if: github.event.comment.body == '!preview'
+    if: github.event.comment.body == '!preview' || github.event.comment.body == '!close_preview'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,6 +16,9 @@ jobs:
         run: |
           git config user.name "dd-anish"
           git config user.email "anish@deardigital.com"
+
+      - name: Check out the development-preview branch
+        run: git checkout development-preview || git checkout -b development-preview
 
       - name: Check current preview status
         id: check_preview
@@ -33,45 +36,73 @@ jobs:
           fi
 
       - name: Handle occupied preview
-        if: steps.check_preview.outputs.status == 'occupied'
+        if: github.event.comment.body == '!preview' && steps.check_preview.outputs.status == 'occupied'
         uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const comment = `The preview theme is currently being used by PR #${{ steps.check_preview.outputs.current_pr }}. Please close that preview first by commenting '!close_preview' on that PR before requesting a new preview.`;
             await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              ...context.repo,
               issue_number: context.issue.number,
               body: comment
             });
 
-      - name: Deploy preview
-        if: steps.check_preview.outputs.status != 'occupied'
+      - name: Close preview
+        if: github.event.comment.body == '!close_preview'
         run: |
-          # Your deployment steps here
+          if [ -f .preview_status ] && [ "$(cat .preview_status)" == "${{ github.event.issue.number }}" ]; then
+            rm .preview_status
+            git add .preview_status
+            git commit -m "Close preview for PR #${{ github.event.issue.number }}"
+            git push origin development-preview
+            echo "Preview closed successfully."
+          else
+            echo "This PR does not currently have an active preview."
+          fi
+
+      - name: Fetch and reset to PR branch
+        if: github.event.comment.body == '!preview' && steps.check_preview.outputs.status != 'occupied'
+        run: |
+          git fetch origin +refs/pull/${{ github.event.issue.number }}/head:pr-branch
+          git checkout development-preview
+          git reset --hard pr-branch
           echo "${{ github.event.issue.number }}" > .preview_status
           git add .preview_status
           git commit -m "Update preview status for PR #${{ github.event.issue.number }}"
-          git push origin development-preview
+          git push origin development-preview --force
 
       - name: Generate preview link
-        if: steps.check_preview.outputs.status != 'occupied'
+        if: github.event.comment.body == '!preview' && steps.check_preview.outputs.status != 'occupied'
         id: preview_link
         run: |
           PREVIEW_URL="https://${{ secrets.SHOP_STORE }}/?preview_theme_id=129969324118"
           echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
       - name: Post comment with preview link
-        if: steps.check_preview.outputs.status != 'occupied'
+        if: github.event.comment.body == '!preview' && steps.check_preview.outputs.status != 'occupied'
         uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const comment = `You can see the [Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})\n\nTo close this preview when you're done, comment '!close_preview' on this PR.`;
             await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              ...context.repo,
               issue_number: context.issue.number,
               body: comment
+            });
+
+      - name: Comment on close preview
+        if: github.event.comment.body == '!close_preview'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            const message = steps.close_preview.outputs.closed == 'true'
+              ? 'Preview has been closed successfully.'
+              : 'This PR does not currently have an active preview.';
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: message
             });
