@@ -112,7 +112,7 @@ jobs:
           SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
           SHOPIFY_ADMIN_API_ACCESS_TOKEN: ${{ secrets.SHOPIFY_PASSWORD }}
         run: |
-          THEME_ID=170548691258
+          THEME_ID=129969324118
           STORE_NAME=$(echo $SHOPIFY_STORE | cut -d'.' -f1)
           PREVIEW_URL="https://admin.shopify.com/store/${STORE_NAME}/themes/${THEME_ID}/editor"
           echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
