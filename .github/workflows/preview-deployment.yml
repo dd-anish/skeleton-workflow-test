@@ -85,9 +85,10 @@ jobs:
         if: github.event.comment.body == '!preview' && steps.check_preview.outputs.status != 'occupied'
         id: preview_link
         run: |
-          TOKEN=$(curl -X POST "https://${{ env.SHOP_STORE }}/admin/api/2023-04/themes/${{ env.THEME_ID }}/preview.json" \
-            -H "X-Shopify-Access-Token: ${{ secrets.SHOP_PASSWORD }}" \
-            | jq -r '.preview.token')
+          RESPONSE=$(curl -X POST "https://${{ env.SHOP_STORE }}/admin/api/2023-04/themes/${{ env.THEME_ID }}/preview.json" \
+            -H "X-Shopify-Access-Token: ${{ secrets.SHOP_PASSWORD }}")
+          echo "API Response: $RESPONSE"  # Add this line to debug the response
+          TOKEN=$(echo $RESPONSE | jq -r '.preview.token')
           PREVIEW_URL="https://${{ env.SHOP_STORE }}/?preview_theme_id=${{ env.THEME_ID }}&preview_token=$TOKEN"
           echo "PREVIEW_LINK=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
