@@ -49,7 +49,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const comment = `The preview theme is currently being used by PR #${{ steps.check_preview.outputs.current_pr }} 😅\n\nPlease close that preview first by commenting \`**!close_preview**\` on that PR before requesting a new preview.`;
+            const comment = `The preview theme is currently being used by PR #${{ steps.check_preview.outputs.current_pr }} 😅\n\nPlease close that preview first by commenting \`!close_preview\` on that PR before requesting a new preview.`;
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
@@ -94,7 +94,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const comment = `You can see the [Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})\n\nTo close this preview when you're done, comment \`**!close_preview**\` on this PR. 🙌`;
+            const comment = `You can see the [Preview Theme](${{ steps.preview_link.outputs.PREVIEW_LINK }})\n\nTo close this preview when you're done, comment \`!close_preview\` on this PR. 🙌`;
             await github.rest.issues.createComment({
               ...context.repo,
               issue_number: context.issue.number,
