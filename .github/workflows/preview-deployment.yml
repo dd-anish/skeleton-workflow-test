@@ -5,10 +5,10 @@ on:
     types: [created]
 
 env:
-  THEME_ID: '129969324118'
   USER_NAME: 'dd-anish'
   USER_EMAIL: 'anish@deardigital.com'
-  SHOP_STORE: 'your-store.myshopify.com'
+  SHOP_STORE: 'anish-test-store.myshopify.com'
+  THEME_ID: '129969324118'
 
 jobs:
   preview-deployment:
