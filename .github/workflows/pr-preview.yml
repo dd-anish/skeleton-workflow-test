@@ -51,7 +51,7 @@ jobs:
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `A preview is currently in progress for PR #${lockedPR.number} by ${initiator}.\nPlease wait for the current preview to be unlocked by ${initiator}.`
+                  body: `A preview is currently in progress for PR #${lockedPR.number} by ${initiator}.\n\nPlease wait for the current preview to be unlocked by ${initiator}.`
                 });
               } else {
                 console.log('No locked PR found. Creating lock.');
