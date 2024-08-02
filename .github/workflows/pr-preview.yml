@@ -130,7 +130,7 @@ jobs:
           SHOPIFY_STORE: ${{ env.SHOP_STORE }}
         run: |
           STORE_NAME=$(echo $SHOPIFY_STORE | cut -d'.' -f1)
-          PREVIEW_URL="https://admin.shopify.com/store/${STORE_NAME}/themes/${env.THEME_ID}/editor"
+          PREVIEW_URL="https://admin.shopify.com/store/${STORE_NAME}/themes/${{env.THEME_ID}}/editor"
           echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
       - name: Comment on PR with preview links
