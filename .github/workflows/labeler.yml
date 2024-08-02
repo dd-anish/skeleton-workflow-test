@@ -11,14 +11,6 @@ jobs:
   labeler:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: List files for debugging
-        run: ls -R .github
-
       - name: Run Labeler
         uses: actions/labeler@v5
         with:
