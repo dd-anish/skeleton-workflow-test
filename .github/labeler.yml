@@ -1,74 +1,33 @@
-theme:
-  - "layout/**/*"
-  - "templates/**/*"
-  - "sections/**/*"
-  - "snippets/**/*"
+# .github/labeler.yml
 
-assets:
-  - "assets/**/*"
+# Add a label for any change in the README.md file
+README:
+  - "documentation"
 
-locales:
-  - "locales/**/*"
+# Add a label for any change in files under the src/ directory
+source-code:
+  - "code"
 
-config:
-  - "config/**/*"
-  - "config/settings_data.json"
-  - "config/settings_schema.json"
+# Add a label for any change in files under the tests/ directory
+tests:
+  - "tests"
 
-styles:
-  - "**/*.css"
-  - "src/tailwind.css"
-  - "tailwind.config.js"
+# Add a label for any change in Markdown files
+"*.md":
+  - "markdown"# .github/labeler.yml
 
-scripts:
-  - "**/*.js"
-  - "assets/global.js"
+# Add a label for any change in the README.md file
+README:
+  - "documentation"
 
-liquid:
-  - "**/*.liquid"
+# Add a label for any change in files under the src/ directory
+source-code:
+  - "code"
 
-documentation:
-  - "**/*.md"
-  - "LICENSE"
-  - "README.md"
-  - "CODE_OF_CONDUCT.md"
-  - "CONTRIBUTING.md"
-  - "SECURITY.md"
-  - "release-notes.md"
-  - "rewards.md"
-  - "documentation/**/*"
+# Add a label for any change in files under the tests/ directory
+tests:
+  - "tests"
 
-ci:
-  - ".github/**/*"
-
-package:
-  - "package.json"
-  - "package-lock.json"
-
-ignore-files:
-  - ".gitignore"
-  - ".shopifyignore"
-
-templates:
-  - "templates/**/*.json"
-
-customers:
-  - "templates/customers/**/*"
-
-sections:
-  - "sections/**/*"
-
-snippets:
-  - "snippets/**/*"
-
-icons:
-  - "snippets/icon-*.liquid"
-
-extras:
-  - "extras/**/*"
-
-python:
-  - "**/*.py"
-
-json:
-  - "**/*.json"
+# Add a label for any change in Markdown files
+"*.md":
+  - "markdown"
