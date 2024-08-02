@@ -10,6 +10,11 @@ permissions:
   issues: write
   actions: read
 
+env:
+  SHOP_STORE: 'anish-test-store.myshopify.com'
+  THEME_ID: '129969324118'
+  BRANCH_NAME: 'development-preview'
+
 jobs:
   check-and-queue:
     if: github.event.issue.pull_request && github.event.comment.body == '!preview'
@@ -98,7 +103,7 @@ jobs:
       - name: Update development-preview branch
         run: |
           git fetch origin
-          git checkout -B development-preview origin/main
+          git checkout -B ${BRANCH_NAME} origin/main
           git reset --hard origin/main
           git clean -fd
           git fetch origin ${{ steps.pr_details.outputs.branch }}
@@ -113,21 +118,19 @@ jobs:
               git diff > conflict_diff.patch
               echo "CONFLICT_DETECTED=true" >> $GITHUB_ENV
             else
-              git push -f origin development-preview
+              git push -f origin ${BRANCH_NAME}
             fi
           else
-            git push -f origin development-preview
+            git push -f origin ${BRANCH_NAME}
           fi
 
       - name: Generate Shopify theme preview link
         id: create_preview
         env:
-          SHOPIFY_STORE: ${{ secrets.SHOPIFY_STORE }}
-          SHOPIFY_ADMIN_API_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ADMIN_API_ACCESS_TOKEN }}
+          SHOPIFY_STORE: ${{ env.SHOP_STORE }}
         run: |
-          THEME_ID=129969324118
           STORE_NAME=$(echo $SHOPIFY_STORE | cut -d'.' -f1)
-          PREVIEW_URL="https://admin.shopify.com/store/${STORE_NAME}/themes/${THEME_ID}/editor"
+          PREVIEW_URL="https://admin.shopify.com/store/${STORE_NAME}/themes/${env.THEME_ID}/editor"
           echo "preview_url=${PREVIEW_URL}" >> $GITHUB_OUTPUT
 
       - name: Comment on PR with preview links
