@@ -142,7 +142,7 @@ jobs:
               repo: context.repo.repo,
               body: `Preview is ready for the latest changes in this PR. You can now check the following:
               - Shopify Theme Preview: [View Demo](${previewUrl})
-              - Once you're done, comment `!unlock-preview` on this PR to allow new preview generations.\n
+              - Once you're done, comment **!unlock-preview** on this PR to allow new preview generations.\n
               _Note that only the user who initiated this preview can unlock it._`
             });
 
