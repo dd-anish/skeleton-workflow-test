@@ -1,13 +1,17 @@
 # .github/labeler.yml
 
 documentation:
-  - "README.md"
+  - changed-files:
+    - any-glob-to-any-file: "README.md"
 
 code:
-  - "src/**"
+  - changed-files:
+    - any-glob-to-any-file: "src/**"
 
 tests:
-  - "tests/**"
+  - changed-files:
+    - any-glob-to-any-file: "tests/**"
 
 markdown:
-  - "*.md"
+  - changed-files:
+    - any-glob-to-any-file: "*.md"
