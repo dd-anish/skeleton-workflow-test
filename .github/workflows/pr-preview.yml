@@ -46,6 +46,7 @@ jobs:
               
               if (lockedPR) {
                 const initiator = labels.find(label => label.name.startsWith(initiatorLabel)).name.replace(initiatorLabel, '');
+                echo "${{ initiator }} - This is initiator"
                 await github.rest.issues.createComment({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
