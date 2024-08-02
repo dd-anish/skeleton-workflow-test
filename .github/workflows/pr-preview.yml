@@ -26,6 +26,7 @@ jobs:
             const lockLabel = 'preview-locked';
             const initiatorLabel = 'preview-initiator-';
             let shouldRun = 'false';
+            let initiator = '';
             const { data: labels } = await github.rest.issues.listLabelsOnIssue({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -45,11 +46,12 @@ jobs:
               const lockedPR = openPRs.find(pr => pr.labels.some(label => label.name === lockLabel));
               
               if (lockedPR) {
+                initiator = lockedPR.labels.find(label => label.name.startsWith(initiatorLabel)).name.replace(initiatorLabel, '');
                 await github.rest.issues.createComment({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `A preview is currently in progress for PR #${lockedPR.number}. Please wait for the current preview to be unlocked.`
+                  body: `A preview is currently in progress for PR #${lockedPR.number} by ${initiator}.\nPlease wait for the current preview to be unlocked by ${initiator}.`
                 });
               } else {
                 console.log('No locked PR found. Creating lock.');
