@@ -1,4 +1,13 @@
-Documentation:
-- any:
-  - changed-files:
-    - any-glob-to-any-file: 'docs/*'
+# .github/labeler.yml
+
+documentation:
+  - "README.md"
+
+code:
+  - "src/**"
+
+tests:
+  - "tests/**"
+
+markdown:
+  - "*.md"
