@@ -45,11 +45,13 @@ jobs:
               const lockedPR = openPRs.find(pr => pr.labels.some(label => label.name === lockLabel));
               
               if (lockedPR) {
+                const initiator = labels.find(label => label.name.startsWith(initiatorLabel)).name.replace(initiatorLabel, '');
                 await github.rest.issues.createComment({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `A preview is currently in progress for PR #${lockedPR.number}. Your request has been queued. Please wait for the current preview to be unlocked.`
+                  body: `A preview is currently in progress for PR #${lockedPR.number} by ${initiator}.\n
+                  Please wait for the current preview to be unlocked by ${initiator}.`
                 });
               } else {
                 console.log('No locked PR found. Creating lock.');
@@ -139,9 +141,9 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `Preview is ready for the latest changes in this PR. You can now check the following:
-              1. Preview Branch: https://github.com/${context.repo.owner}/${context.repo.repo}/tree/development-preview
-              2. Shopify Theme Preview: ${previewUrl}
-              Please review and provide your feedback. Once you're done, comment '!unlock-preview' on this PR to allow new preview generations. Note that only the user who initiated this preview can unlock it.`
+              - Shopify Theme Preview: [View Demo](${previewUrl})
+              - Once you're done, comment '!unlock-preview' on this PR to allow new preview generations.
+              _Note that only the user who initiated this preview can unlock it._`
             });
 
   unlock-preview:
@@ -209,5 +211,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: 'Preview lock has been removed. New previews can now be generated.'
+              body: 'Preview lock has been removed. New previews can now be generated. Enjoy😁'
             });
