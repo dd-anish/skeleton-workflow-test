@@ -1,17 +1,17 @@
 # .github/labeler.yml
 
-# Add a label for any change in the README.md file
-README:
-  - "documentation"
+- label: "documentation"
+  paths:
+    - "README.md"
 
-# Add a label for any change in files under the src/ directory
-source-code:
-  - "code"
+- label: "code"
+  paths:
+    - "src/**"
 
-# Add a label for any change in files under the tests/ directory
-tests:
-  - "tests"
+- label: "tests"
+  paths:
+    - "tests/**"
 
-# Add a label for any change in Markdown files
-"*.md":
-  - "markdown"# .github/labeler.yml
+- label: "markdown"
+  paths:
+    - "*.md"
