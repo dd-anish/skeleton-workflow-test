@@ -26,29 +26,33 @@
     {% if settings.tailwind_enabled %}
       {% if request.design_mode %}
         <script>
-          document.addEventListener("DOMContentLoaded", function() {
-            document.body.style.opacity = "1";
+          document.addEventListener('DOMContentLoaded', function () {
+            document.body.style.opacity = '1';
           });
         </script>
-        
+
         {% # theme-check-disable %}
         <script src="https://cdn.tailwindcss.com"></script>
         {% # theme-check-enable %}
         <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            {{ settings.tailwind_config }}
+          document.addEventListener('DOMContentLoaded', function () {
+            {
+              {
+                settings.tailwind_config;
+              }
+            }
           });
-        </script>   
-        <style type='text/tailwindcss'>
+        </script>
+        <style type="text/tailwindcss">
           {{ settings.tailwind_css }}
-        </style>             
+        </style>
       {% else %}
-      {{ 'output.css' | asset_url | stylesheet_tag }}
+        {{ 'output.css' | asset_url | stylesheet_tag }}
       {% endif %}
-    {% else %}      
+    {% else %}
       {{ 'base.css' | asset_url | stylesheet_tag }}
     {% endif %}
-        
+
     <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
 
     {{ content_for_header }}
@@ -60,11 +64,10 @@
       }
     </script>
     {%- liquid
-      assign heading_font_medium = settings.heading_font | font_modify: 'weight', "500"
+      assign heading_font_medium = settings.heading_font | font_modify: 'weight', '500'
     %}
-    
-    {% style %}
 
+    {% style %}
       {{ settings.heading_font | font_face: font_display: 'swap' }}
       {{ heading_font_medium | font_face: font_display: 'swap' }}
       {{ settings.body_font | font_face: font_display: 'swap' }}
@@ -98,7 +101,11 @@
     {% endstyle %}
   </head>
 
-  <body {% if settings.tailwind_enabled and request.design_mode %}style="opacity:0;transition:0.1s ease;"{% endif %}>
+  <body
+    {% if settings.tailwind_enabled and request.design_mode %}
+      style="opacity:0;transition:0.1s ease;"
+    {% endif %}
+  >
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ 'accessibility.skip_to_text' | t }}
     </a>
@@ -107,23 +114,15 @@
       {% section 'dev__modal' %}
     {% endif %}
 
-
-    {% comment %}
-      {% section 'dev__announcement-bar' %}
-      {% section 'dev__header' %}
-    {% endcomment %}
-
     {% sections 'header-group' %}
 
-    <h1> Aur DD mai kaam kaisa chalu hai </h1>
+    <h1>Anish Balle</h1>
 
     <main id="MainContent" class="content-for-layout focus-none" role="main">
       {{ content_for_layout }}
     </main>
 
     {% sections 'footer-group' %}
-
-    {% comment %} {% sections 'drawer-group' %} {% endcomment %}
 
     {% sections 'overlay-group' %}
 
