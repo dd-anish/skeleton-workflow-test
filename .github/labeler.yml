@@ -1,17 +1,4 @@
-# .github/labeler.yml
-
-- label: "documentation"
-  paths:
-    - "README.md"
-
-- label: "code"
-  paths:
-    - "src/**"
-
-- label: "tests"
-  paths:
-    - "tests/**"
-
-- label: "markdown"
-  paths:
-    - "*.md"
+Documentation:
+- any:
+  - changed-files:
+    - any-glob-to-any-file: 'docs/*'
