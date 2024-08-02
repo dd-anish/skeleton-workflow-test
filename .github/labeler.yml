@@ -15,19 +15,3 @@ tests:
 # Add a label for any change in Markdown files
 "*.md":
   - "markdown"# .github/labeler.yml
-
-# Add a label for any change in the README.md file
-README:
-  - "documentation"
-
-# Add a label for any change in files under the src/ directory
-source-code:
-  - "code"
-
-# Add a label for any change in files under the tests/ directory
-tests:
-  - "tests"
-
-# Add a label for any change in Markdown files
-"*.md":
-  - "markdown"
