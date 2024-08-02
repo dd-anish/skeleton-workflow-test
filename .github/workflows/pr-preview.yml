@@ -45,12 +45,12 @@ jobs:
               const lockedPR = openPRs.find(pr => pr.labels.some(label => label.name === lockLabel));
               
               if (lockedPR) {
-                const initiator = labels.find(label => label.name.startsWith(initiatorLabel)).name.replace(initiatorLabel, '');
+                # const initiator = labels.find(label => label.name.startsWith(initiatorLabel)).name.replace(initiatorLabel, '');
                 await github.rest.issues.createComment({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                  body: `A preview is currently in progress for PR #${lockedPR.number} by ${initiator}. Please wait for the current preview to be unlocked by ${initiator}.`
+                  body: `A preview is currently in progress for PR #${lockedPR.number}. Please wait for the current preview to be unlocked.`
                 });
               } else {
                 console.log('No locked PR found. Creating lock.');
